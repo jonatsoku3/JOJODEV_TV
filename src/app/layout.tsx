@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Noto_Sans_Thai } from "next/font/google";
+import { Geist_Mono, Noto_Sans_Thai, Outfit } from "next/font/google";
+import { AmbientBackdrop } from "@/components/ambient-backdrop";
 import { Providers } from "@/components/providers";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { COPY } from "@/lib/i18n";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const outfit = Outfit({
+  variable: "--font-outfit",
   subsets: ["latin"],
 });
 
@@ -35,14 +36,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="th"
       suppressHydrationWarning
-      className={`dark ${geistSans.variable} ${geistMono.variable} ${notoThai.variable} h-full antialiased`}
+      className={`dark ${outfit.variable} ${geistMono.variable} ${notoThai.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col bg-background text-foreground">
+      <body className="flex min-h-full flex-col text-foreground">
+        <AmbientBackdrop />
         <Providers>
           <SiteHeader />
-          <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6 sm:py-8">
-            {children}
-          </main>
+          <main className="flex-1">{children}</main>
           <SiteFooter />
         </Providers>
       </body>

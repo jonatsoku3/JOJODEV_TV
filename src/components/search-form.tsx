@@ -37,7 +37,7 @@ export function SearchForm({
         defaultValue={defaultValue}
         placeholder={COPY.searchPlaceholder}
         autoFocus={autoFocus}
-        className="h-10 rounded-full border-white/10 bg-white/6 pr-4 pl-10 text-sm md:text-sm"
+        className="h-10 rounded-full border-white/12 bg-white/8 pr-4 pl-10 text-sm shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] md:text-sm"
       />
     </form>
   );

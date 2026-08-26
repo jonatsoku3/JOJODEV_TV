@@ -29,8 +29,8 @@ export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-white/8 bg-[#0b0d16]/80 backdrop-blur-xl">
-      <div className="mx-auto flex h-16 w-full max-w-7xl items-center gap-3 px-4 sm:px-6">
+    <header className="sticky top-0 z-40 border-b border-white/8 bg-[#0b0714]/70 backdrop-blur-2xl">
+      <div className="mx-auto flex h-[4.25rem] w-full max-w-7xl items-center gap-3 px-4 sm:px-6">
         <Link href="/" className="shrink-0">
           <BrandMark />
         </Link>
@@ -43,8 +43,10 @@ export function SiteHeader() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "rounded-full px-3 py-1.5 text-sm transition",
-                  active ? "bg-white/10 text-foreground" : "text-muted-foreground hover:text-foreground"
+                  "rounded-full px-3.5 py-1.5 text-sm transition",
+                  active
+                    ? "bg-gradient-to-r from-rose-500/30 to-amber-400/20 text-white ring-1 ring-white/15"
+                    : "text-white/65 hover:bg-white/8 hover:text-white"
                 )}
               >
                 {item.label}
@@ -64,7 +66,7 @@ export function SiteHeader() {
             <Menu className="size-5" />
             <span className="sr-only">{COPY.menu}</span>
           </SheetTrigger>
-          <SheetContent side="right" className="bg-[#12141f]">
+          <SheetContent side="right" className="border-white/10 bg-[#140e1f]">
             <SheetHeader>
               <SheetTitle>
                 <BrandMark />
@@ -82,8 +84,8 @@ export function SiteHeader() {
                       href={item.href}
                       onClick={() => setMenuOpen(false)}
                       className={cn(
-                        "flex items-center gap-3 rounded-xl px-3 py-3 text-sm hover:bg-white/6",
-                        active && "bg-white/8 text-foreground"
+                        "flex items-center gap-3 rounded-xl px-3 py-3 text-sm hover:bg-white/8",
+                        active && "bg-gradient-to-r from-rose-500/25 to-amber-400/15 text-white"
                       )}
                     >
                       <Icon className="size-4" />

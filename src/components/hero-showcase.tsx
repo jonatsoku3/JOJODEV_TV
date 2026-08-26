@@ -5,7 +5,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { COPY } from "@/lib/i18n";
 import type { ChannelSummary } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { Play } from "lucide-react";
+import { Globe2, Play, Radio, Sparkles } from "lucide-react";
 
 export function HeroShowcase({
   channel,
@@ -15,59 +15,103 @@ export function HeroShowcase({
   stats: { channels: number; countries: number };
 }) {
   return (
-    <section className="relative overflow-hidden rounded-[2rem] bg-[#141728] ring-1 ring-white/10">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,color-mix(in_oklch,var(--primary),transparent_70%),transparent_42%),radial-gradient(circle_at_80%_20%,rgba(99,102,241,0.25),transparent_36%)]" />
-      <div className="relative grid gap-8 p-6 sm:p-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
-        <div className="space-y-5">
-          <Badge className="bg-primary tracking-wide uppercase">{COPY.live}</Badge>
-          <div>
-            <p className="text-sm text-primary/90">{COPY.tagline}</p>
-            <h1 className="mt-2 max-w-xl font-heading text-4xl font-semibold tracking-tight sm:text-5xl">
-              {COPY.brand} · {channel.countryNameLocal}
-            </h1>
-            <p className="mt-3 max-w-xl text-base text-muted-foreground">{COPY.subtitle}</p>
+    <section className="relative overflow-hidden border-b border-white/8">
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-rose-600/25 via-violet-700/15 to-amber-400/10" />
+        <div className="absolute top-10 left-[12%] size-64 rounded-full bg-rose-400/20 blur-3xl" />
+        <div className="absolute right-[8%] bottom-0 size-80 rounded-full bg-amber-300/15 blur-3xl" />
+      </div>
+      <div className="relative mx-auto grid w-full max-w-7xl gap-10 px-4 py-10 sm:px-6 sm:py-14 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:py-16">
+        <div className="space-y-6">
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge className="live-pulse h-6 gap-1.5 rounded-full bg-primary px-3 text-[11px] tracking-[0.18em] uppercase">
+              <span className="size-1.5 rounded-full bg-white" />
+              {COPY.live}
+            </Badge>
+            <span className="inline-flex items-center gap-1 rounded-full bg-white/8 px-3 py-1 text-xs text-amber-200 ring-1 ring-amber-200/20">
+              <Sparkles className="size-3.5" />
+              {COPY.featuredNow}
+            </span>
           </div>
-          <div className="flex flex-wrap gap-6 text-sm">
-            <div>
-              <p className="font-heading text-2xl font-semibold text-foreground">
+          <div>
+            <p className="text-sm font-medium text-rose-200/90">{COPY.tagline}</p>
+            <h1 className="mt-2 max-w-xl font-heading text-4xl font-semibold tracking-tight sm:text-6xl">
+              <span className="text-gradient">{COPY.brand}</span>
+              <span className="mt-1 block text-3xl font-medium text-white/90 sm:text-4xl">
+                {channel.countryNameLocal} · {channel.name}
+              </span>
+            </h1>
+            <p className="mt-4 max-w-xl text-base leading-relaxed text-white/70">{COPY.subtitle}</p>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <div className="rounded-2xl bg-white/6 px-4 py-3 ring-1 ring-white/10">
+              <p className="font-heading text-2xl font-semibold text-amber-200">
                 {stats.channels.toLocaleString()}
               </p>
-              <p className="text-muted-foreground">{COPY.channelsCount}</p>
+              <p className="text-xs text-white/60">{COPY.channelsCount}</p>
             </div>
-            <div>
-              <p className="font-heading text-2xl font-semibold text-foreground">
+            <div className="rounded-2xl bg-white/6 px-4 py-3 ring-1 ring-white/10">
+              <p className="font-heading text-2xl font-semibold text-cyan-200">
                 {stats.countries.toLocaleString()}
               </p>
-              <p className="text-muted-foreground">{COPY.countriesCount}</p>
+              <p className="flex items-center gap-1 text-xs text-white/60">
+                <Globe2 className="size-3" />
+                {COPY.countriesCount}
+              </p>
+            </div>
+            <div className="rounded-2xl bg-white/6 px-4 py-3 ring-1 ring-white/10">
+              <p className="inline-flex items-center gap-1.5 font-heading text-2xl font-semibold text-rose-200">
+                <Radio className="size-5" />
+                24/7
+              </p>
+              <p className="text-xs text-white/60">{COPY.playing}</p>
             </div>
           </div>
           <div className="flex flex-wrap gap-3">
             <Link
               href={`/watch/${encodeURIComponent(channel.id)}`}
-              className={cn(buttonVariants({ size: "lg" }), "h-10 rounded-full px-5")}
+              className={cn(
+                buttonVariants({ size: "lg" }),
+                "h-11 rounded-full bg-primary px-6 text-sm shadow-[0_10px_40px_oklch(0.7_0.2_18_/_0.45)] hover:bg-primary/90"
+              )}
             >
               <Play className="size-4 fill-current" />
               {COPY.watchNow} · {channel.name}
             </Link>
             <Link
               href="/browse"
-              className={cn(buttonVariants({ variant: "outline", size: "lg" }), "h-10 rounded-full px-5")}
+              className={cn(
+                buttonVariants({ variant: "outline", size: "lg" }),
+                "h-11 rounded-full border-white/20 bg-white/5 px-6 text-sm backdrop-blur"
+              )}
             >
               {COPY.browse}
             </Link>
           </div>
         </div>
-        <Link href={`/watch/${encodeURIComponent(channel.id)}`} className="block">
-          <div className="overflow-hidden rounded-3xl bg-black/30 ring-1 ring-white/10">
-            <ChannelLogo name={channel.name} logo={channel.logo} className="aspect-[16/10] w-full" />
+        <Link href={`/watch/${encodeURIComponent(channel.id)}`} className="group block">
+          <div className="float-slow relative overflow-hidden rounded-[1.75rem] bg-black/30 p-1 ring-1 ring-white/15 shadow-[0_30px_80px_rgba(0,0,0,0.45)]">
+            <div className="relative overflow-hidden rounded-[1.4rem]">
+              <ChannelLogo
+                name={channel.name}
+                logo={channel.logo}
+                seed={channel.id}
+                className="aspect-[16/10] w-full"
+              />
+              <div className="absolute inset-0 grid place-items-center bg-black/0 transition group-hover:bg-black/25">
+                <span className="grid size-16 place-items-center rounded-full bg-white/90 text-black opacity-0 shadow-xl transition group-hover:opacity-100">
+                  <Play className="size-7 fill-current" />
+                </span>
+              </div>
+            </div>
             <div className="flex items-center justify-between px-4 py-3">
               <div>
                 <p className="font-medium">{channel.name}</p>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-white/60">
                   {channel.flag} {channel.countryNameLocal}
                 </p>
               </div>
-              <Badge variant="secondary">{COPY.live}</Badge>
+              <Badge className="bg-primary">{COPY.live}</Badge>
             </div>
           </div>
         </Link>

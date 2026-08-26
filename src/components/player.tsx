@@ -150,7 +150,7 @@ export function LivePlayer({
   }
 
   return (
-    <div className="overflow-hidden rounded-3xl bg-black ring-1 ring-white/10">
+    <div className="overflow-hidden rounded-[1.6rem] bg-black ring-1 ring-white/12 shadow-[0_24px_80px_rgba(0,0,0,0.45)]">
       <div className="relative aspect-video">
         <video
           ref={videoRef}
@@ -181,7 +181,7 @@ export function LivePlayer({
           </div>
         ) : null}
       </div>
-      <div className="flex flex-wrap items-center justify-between gap-2 border-t border-white/8 bg-[#0c0e16] px-4 py-3 text-xs text-muted-foreground">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-t border-white/8 bg-gradient-to-r from-[#140b18] to-[#0d0a16] px-4 py-3 text-xs text-white/65">
         <p>
           {COPY.playing} · {COPY.streams} {index + 1}/{streams.length}
           {streams[index]?.quality ? ` · ${streams[index].quality}` : ""}

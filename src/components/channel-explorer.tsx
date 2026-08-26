@@ -119,7 +119,7 @@ export function ChannelExplorer({
     <div className="space-y-6">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <h1 className="font-heading text-3xl font-semibold tracking-tight">
+          <h1 className="font-heading text-3xl font-semibold tracking-tight sm:text-4xl">
             {heading || COPY.browse}
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
@@ -130,7 +130,7 @@ export function ChannelExplorer({
           value={q}
           onChange={(event) => setQ(event.target.value)}
           placeholder={COPY.searchPlaceholder}
-          className="h-10 max-w-md rounded-full border-white/10 bg-white/6 px-4"
+          className="h-10 max-w-md rounded-full border-white/12 bg-white/8 px-4"
         />
       </div>
 
@@ -154,7 +154,7 @@ export function ChannelExplorer({
             <select
               value={country}
               onChange={(event) => setCountry(event.target.value)}
-              className="h-9 max-w-xs rounded-full border border-white/10 bg-[#1a1d2b] px-3 text-sm text-foreground"
+              className="h-9 max-w-xs rounded-full border border-white/12 bg-[#1a1228] px-3 text-sm text-foreground"
               aria-label={COPY.countries}
             >
               <option value="">{COPY.allCountries}</option>
@@ -230,8 +230,8 @@ function FilterChip({
       className={cn(
         "shrink-0 rounded-full px-3 py-1.5 text-sm ring-1 transition",
         active
-          ? "bg-primary text-primary-foreground ring-primary"
-          : "bg-white/4 text-muted-foreground ring-white/10 hover:text-foreground"
+          ? "bg-gradient-to-r from-rose-500 to-amber-400 text-white ring-transparent"
+          : "bg-white/6 text-white/70 ring-white/10 hover:bg-white/10 hover:text-white"
       )}
     >
       {children}

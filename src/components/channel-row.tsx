@@ -1,27 +1,35 @@
 import Link from "next/link";
 import { ChannelCard } from "@/components/channel-card";
 import { COPY } from "@/lib/i18n";
+import { ROW_ACCENT } from "@/lib/palette";
 import type { ChannelSummary } from "@/lib/types";
 import { ChevronRight } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export function ChannelRow({
   title,
   href,
   items,
+  accent,
 }: {
   title: string;
   href?: string;
   items: ChannelSummary[];
+  accent?: string;
 }) {
   if (!items.length) return null;
+  const bar = accent ? ROW_ACCENT[accent] : "from-rose-400 to-amber-300";
   return (
     <section className="space-y-3">
       <div className="flex items-end justify-between gap-3">
-        <h2 className="font-heading text-xl font-semibold tracking-tight">{title}</h2>
+        <h2 className="flex items-center gap-2.5 font-heading text-xl font-semibold tracking-tight">
+          <span className={cn("h-5 w-1.5 rounded-full bg-gradient-to-b", bar)} />
+          {title}
+        </h2>
         {href ? (
           <Link
             href={href}
-            className="inline-flex items-center gap-0.5 text-sm text-muted-foreground transition hover:text-foreground"
+            className="inline-flex items-center gap-0.5 text-sm text-muted-foreground transition hover:text-amber-200"
           >
             {COPY.allChannels}
             <ChevronRight className="size-4" />

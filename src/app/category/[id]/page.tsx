@@ -1,4 +1,5 @@
 import { ChannelExplorer } from "@/components/channel-explorer";
+import { PageShell } from "@/components/page-shell";
 import { getCatalog } from "@/lib/catalog";
 import { categoryName } from "@/lib/i18n";
 import { notFound } from "next/navigation";
@@ -17,12 +18,14 @@ export default async function CategoryPage({
   if (!category) notFound();
 
   return (
-    <Suspense fallback={<div className="h-96 animate-pulse rounded-3xl bg-white/5" />}>
-      <ChannelExplorer
-        heading={categoryName(category.id, category.name)}
-        initialCategory={category.id}
-        lockCategory
-      />
-    </Suspense>
+    <PageShell>
+      <Suspense fallback={<div className="h-96 animate-pulse rounded-3xl bg-white/8" />}>
+        <ChannelExplorer
+          heading={categoryName(category.id, category.name)}
+          initialCategory={category.id}
+          lockCategory
+        />
+      </Suspense>
+    </PageShell>
   );
 }

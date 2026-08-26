@@ -12,7 +12,7 @@ export const COPY = {
   countries: "ประเทศ",
   favorites: "รายการโปรด",
   recent: "ดูล่าสุด",
-  featured: "แนะนำสำหรับคุณ",
+  featuredNow: "กำลังออกอากาศเด่น",
   thaiTv: "ทีวีไทย",
   worldNews: "ข่าวทั่วโลก",
   sports: "กีฬา",
