@@ -1,0 +1,189 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import Hls from "hls.js";
+import { AlertTriangle, Loader2, Maximize, Pause, Play, RotateCcw } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { addRecent } from "@/hooks/use-library";
+import { COPY } from "@/lib/i18n";
+import type { StreamSource } from "@/lib/types";
+
+export function LivePlayer({
+  channelId,
+  streams,
+}: {
+  channelId: string;
+  streams: StreamSource[];
+}) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const hlsRef = useRef<Hls | null>(null);
+  const [index, setIndex] = useState(0);
+  const [status, setStatus] = useState<"loading" | "playing" | "error">("loading");
+  const [paused, setPaused] = useState(false);
+
+  useEffect(() => {
+    addRecent(channelId);
+  }, [channelId]);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !streams.length) {
+      setStatus("error");
+      return;
+    }
+
+    const src = `/api/play/${encodeURIComponent(channelId)}?i=${index}`;
+    let cancelled = false;
+    setStatus("loading");
+    setPaused(false);
+
+    const fail = () => {
+      if (cancelled) return;
+      if (index < streams.length - 1) {
+        setIndex((value) => value + 1);
+        return;
+      }
+      setStatus("error");
+    };
+
+    const onPlaying = () => {
+      if (!cancelled) setStatus("playing");
+    };
+    const onPause = () => setPaused(true);
+    const onPlay = () => setPaused(false);
+
+    video.addEventListener("playing", onPlaying);
+    video.addEventListener("pause", onPause);
+    video.addEventListener("play", onPlay);
+    video.addEventListener("error", fail);
+
+    if (video.canPlayType("application/vnd.apple.mpegurl") && !Hls.isSupported()) {
+      video.src = src;
+      video.play().catch(() => undefined);
+    } else if (Hls.isSupported()) {
+      const hls = new Hls({
+        enableWorker: true,
+        lowLatencyMode: true,
+        fragLoadingMaxRetry: 3,
+        manifestLoadingMaxRetry: 2,
+      });
+      hlsRef.current = hls;
+      hls.loadSource(src);
+      hls.attachMedia(video);
+      hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        video.play().catch(() => undefined);
+      });
+      hls.on(Hls.Events.ERROR, (_event, data) => {
+        if (!data.fatal) return;
+        if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
+          hls.startLoad();
+          setTimeout(() => {
+            if (!cancelled && video.readyState < 2) fail();
+          }, 4000);
+        } else {
+          fail();
+        }
+      });
+    } else {
+      video.src = src;
+      video.play().catch(fail);
+    }
+
+    return () => {
+      cancelled = true;
+      video.removeEventListener("playing", onPlaying);
+      video.removeEventListener("pause", onPause);
+      video.removeEventListener("play", onPlay);
+      video.removeEventListener("error", fail);
+      hlsRef.current?.destroy();
+      hlsRef.current = null;
+      video.removeAttribute("src");
+      video.load();
+    };
+  }, [channelId, index, streams.length]);
+
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      const video = videoRef.current;
+      if (!video) return;
+      if (event.key === " " && event.target === document.body) {
+        event.preventDefault();
+        if (video.paused) video.play().catch(() => undefined);
+        else video.pause();
+      }
+      if (event.key === "f" || event.key === "F") {
+        if (document.fullscreenElement) document.exitFullscreen().catch(() => undefined);
+        else video.requestFullscreen().catch(() => undefined);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  return (
+    <div className="overflow-hidden rounded-3xl bg-black ring-1 ring-white/10">
+      <div className="relative aspect-video">
+        <video
+          ref={videoRef}
+          className="size-full bg-black object-contain"
+          controls
+          autoPlay
+          playsInline
+        />
+        {status === "loading" ? (
+          <div className="absolute inset-0 grid place-items-center bg-black/55 text-sm">
+            <div className="flex items-center gap-2 rounded-full bg-black/60 px-4 py-2">
+              <Loader2 className="size-4 animate-spin" />
+              {COPY.loading}
+            </div>
+          </div>
+        ) : null}
+        {status === "error" ? (
+          <div className="absolute inset-0 grid place-items-center bg-black/80 px-6 text-center">
+            <div className="max-w-md space-y-3">
+              <AlertTriangle className="mx-auto size-8 text-primary" />
+              <h2 className="font-heading text-lg font-semibold">{COPY.errorTitle}</h2>
+              <p className="text-sm text-white/70">{COPY.errorBody}</p>
+              {streams.length > 1 ? (
+                <Button
+                  onClick={() => setIndex((value) => (value + 1) % streams.length)}
+                  className="rounded-full"
+                >
+                  <RotateCcw className="size-4" />
+                  {COPY.tryNext}
+                </Button>
+              ) : null}
+            </div>
+          </div>
+        ) : null}
+      </div>
+      <div className="flex flex-wrap items-center justify-between gap-2 border-t border-white/8 bg-[#0c0e16] px-4 py-3 text-xs text-muted-foreground">
+        <p>
+          {COPY.playing} · {COPY.streams} {index + 1}/{streams.length}
+          {streams[index]?.quality ? ` · ${streams[index].quality}` : ""}
+        </p>
+        <div className="flex gap-2">
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => {
+              const video = videoRef.current;
+              if (!video) return;
+              if (video.paused) video.play().catch(() => undefined);
+              else video.pause();
+            }}
+          >
+            {paused ? <Play className="size-3.5" /> : <Pause className="size-3.5" />}
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => videoRef.current?.requestFullscreen().catch(() => undefined)}
+          >
+            <Maximize className="size-3.5" />
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
