@@ -119,7 +119,8 @@ export function ChannelExplorer({
     <div className="space-y-6">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <h1 className="font-heading text-3xl font-semibold tracking-tight sm:text-4xl">
+          <p className="text-sm font-medium text-amber-200">{COPY.tagline}</p>
+          <h1 className="mt-1 font-heading text-3xl font-semibold tracking-tight sm:text-4xl">
             {heading || COPY.browse}
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">

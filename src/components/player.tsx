@@ -159,6 +159,12 @@ export function LivePlayer({
           autoPlay
           playsInline
         />
+        {status === "playing" ? (
+          <span className="pointer-events-none absolute top-3 left-3 z-10 inline-flex items-center gap-1.5 rounded-full bg-primary px-2.5 py-1 text-[10px] font-semibold tracking-[0.16em] text-white uppercase shadow-lg">
+            <span className="size-1.5 rounded-full bg-white" />
+            {COPY.live}
+          </span>
+        ) : null}
         {status === "loading" ? (
           <div className="absolute inset-0 grid place-items-center bg-black/55 text-sm">
             <div className="flex items-center gap-2 rounded-full bg-black/60 px-4 py-2">

@@ -8,8 +8,11 @@ export default function FavoritesPage() {
   return (
     <PageShell className="space-y-6">
       <div>
-        <h1 className="font-heading text-3xl font-semibold tracking-tight">{COPY.favorites}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">{COPY.emptyFavoritesBody}</p>
+        <p className="text-sm font-medium text-amber-200">{COPY.tagline}</p>
+        <h1 className="mt-1 font-heading text-3xl font-semibold tracking-tight sm:text-4xl">
+          {COPY.favorites}
+        </h1>
+        <p className="mt-2 text-sm text-muted-foreground">{COPY.emptyFavoritesBody}</p>
       </div>
       <FavoritesView />
     </PageShell>

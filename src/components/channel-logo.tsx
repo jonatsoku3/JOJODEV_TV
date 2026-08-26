@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cardTint } from "@/lib/palette";
 import { cn } from "@/lib/utils";
 
@@ -15,29 +15,59 @@ export function ChannelLogo({
   seed?: string;
   className?: string;
 }) {
+  const [ready, setReady] = useState(false);
   const [failed, setFailed] = useState(false);
   const initial = name.trim().slice(0, 2).toUpperCase();
+  const showLogo = Boolean(logo) && !failed;
+
+  useEffect(() => {
+    setReady(false);
+    setFailed(false);
+  }, [logo]);
 
   return (
     <div
-      className={cn("relative grid place-items-center overflow-hidden", className)}
+      className={cn(
+        "relative grid place-items-center overflow-hidden [container-type:size]",
+        className,
+      )}
       style={cardTint(seed || name)}
     >
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.22),transparent_42%)]" />
-      {logo && !failed ? (
+      <span
+        className={cn(
+          "relative z-10 font-heading text-[clamp(1.35rem,22cqmin,4.5rem)] font-semibold tracking-wide text-white/90 transition-opacity",
+          ready && showLogo ? "opacity-0" : "opacity-100",
+        )}
+      >
+        {initial}
+      </span>
+      {showLogo ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
-          src={logo}
+          src={logo!}
           alt=""
-          className="relative z-10 max-h-[68%] max-w-[76%] object-contain drop-shadow-[0_8px_24px_rgba(0,0,0,0.45)]"
+          className={cn(
+            "absolute inset-[16%] z-20 m-auto max-h-[68%] max-w-[76%] object-contain drop-shadow-[0_8px_24px_rgba(0,0,0,0.45)] transition-opacity",
+            ready ? "opacity-100" : "opacity-0",
+          )}
           loading="lazy"
-          onError={() => setFailed(true)}
+          referrerPolicy="no-referrer"
+          onLoad={(event) => {
+            const img = event.currentTarget;
+            if (img.naturalWidth < 8 || img.naturalHeight < 8) {
+              setFailed(true);
+              setReady(false);
+              return;
+            }
+            setReady(true);
+          }}
+          onError={() => {
+            setFailed(true);
+            setReady(false);
+          }}
         />
-      ) : (
-        <span className="relative z-10 font-heading text-2xl font-semibold tracking-wide text-white/90">
-          {initial}
-        </span>
-      )}
+      ) : null}
     </div>
   );
 }
