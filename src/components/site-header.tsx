@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Heart, Menu, Globe2, LayoutGrid, House } from "lucide-react";
@@ -25,6 +26,7 @@ const NAV = [
 
 export function SiteHeader() {
   const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-40 border-b border-white/8 bg-[#0b0d16]/80 backdrop-blur-xl">
@@ -53,10 +55,10 @@ export function SiteHeader() {
 
         <SearchForm className="ml-auto hidden max-w-md flex-1 md:block" />
 
-        <Sheet>
+        <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
           <SheetTrigger
             render={
-              <Button variant="ghost" size="icon" className="md:hidden" />
+              <Button variant="ghost" size="icon" className="ml-auto md:hidden" />
             }
           >
             <Menu className="size-5" />
@@ -73,11 +75,16 @@ export function SiteHeader() {
               <nav className="grid gap-1">
                 {NAV.map((item) => {
                   const Icon = item.icon;
+                  const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
                   return (
                     <Link
                       key={item.href}
                       href={item.href}
-                      className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm hover:bg-white/6"
+                      onClick={() => setMenuOpen(false)}
+                      className={cn(
+                        "flex items-center gap-3 rounded-xl px-3 py-3 text-sm hover:bg-white/6",
+                        active && "bg-white/8 text-foreground"
+                      )}
                     >
                       <Icon className="size-4" />
                       {item.label}
