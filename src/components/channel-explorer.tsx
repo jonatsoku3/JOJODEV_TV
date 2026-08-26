@@ -33,9 +33,13 @@ export function ChannelExplorer({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const [q, setQ] = useState(initialQ);
-  const [country, setCountry] = useState(initialCountry);
-  const [category, setCategory] = useState(initialCategory);
+  const [q, setQ] = useState(initialQ || searchParams.get("q") || "");
+  const [country, setCountry] = useState(
+    initialCountry || searchParams.get("country") || ""
+  );
+  const [category, setCategory] = useState(
+    initialCategory || searchParams.get("category") || ""
+  );
   const [items, setItems] = useState<ChannelSummary[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -52,16 +56,17 @@ export function ChannelExplorer({
   useEffect(() => {
     const params = new URLSearchParams();
     if (q) params.set("q", q);
-    if (country) params.set("country", country);
-    if (category) params.set("category", category);
+    if (country && !lockCountry) params.set("country", country);
+    if (category && !lockCategory) params.set("category", category);
     const next = params.toString();
     const current = searchParams.toString();
     if (next !== current) {
       router.replace(next ? `${pathname}?${next}` : pathname, { scroll: false });
     }
-  }, [q, country, category, pathname, router, searchParams]);
+  }, [q, country, category, pathname, router, searchParams, lockCountry, lockCategory]);
 
   useEffect(() => {
+    const controller = new AbortController();
     const handle = window.setTimeout(async () => {
       setLoading(true);
       setError(false);
@@ -70,21 +75,26 @@ export function ChannelExplorer({
         if (q) params.set("q", q);
         if (country) params.set("country", country);
         if (category) params.set("category", category);
-        const res = await fetch(`/api/channels?${params}`);
+        const res = await fetch(`/api/channels?${params}`, { signal: controller.signal });
         if (!res.ok) throw new Error("fail");
         const data = (await res.json()) as { items: ChannelSummary[]; total: number };
         setItems(data.items);
         setTotal(data.total);
-      } catch {
+      } catch (err) {
+        if ((err as { name?: string }).name === "AbortError") return;
         setError(true);
       } finally {
-        setLoading(false);
+        if (!controller.signal.aborted) setLoading(false);
       }
     }, 180);
-    return () => window.clearTimeout(handle);
+    return () => {
+      window.clearTimeout(handle);
+      controller.abort();
+    };
   }, [q, country, category]);
 
-  const countries = useMemo(() => meta?.countries.slice(0, 28) ?? [], [meta]);
+  const chipCountries = useMemo(() => meta?.countries.slice(0, 24) ?? [], [meta]);
+  const allCountries = meta?.countries ?? [];
   const categories = meta?.categories ?? [];
 
   async function loadMore() {
@@ -98,7 +108,10 @@ export function ChannelExplorer({
     const res = await fetch(`/api/channels?${params}`);
     if (!res.ok) return;
     const data = (await res.json()) as { items: ChannelSummary[]; total: number };
-    setItems((prev) => [...prev, ...data.items]);
+    setItems((prev) => {
+      const seen = new Set(prev.map((item) => item.id));
+      return [...prev, ...data.items.filter((item) => !seen.has(item.id))];
+    });
     setTotal(data.total);
   }
 
@@ -122,19 +135,36 @@ export function ChannelExplorer({
       </div>
 
       {!lockCountry ? (
-        <div className="no-scrollbar flex gap-2 overflow-x-auto pb-1">
-          <FilterChip active={!country} onClick={() => setCountry("")}>
-            {COPY.allCountries}
-          </FilterChip>
-          {countries.map((item) => (
-            <FilterChip
-              key={item.code}
-              active={country === item.code}
-              onClick={() => setCountry(item.code === country ? "" : item.code)}
-            >
-              {item.flag} {item.nameLocal}
+        <div className="space-y-2">
+          <div className="no-scrollbar flex gap-2 overflow-x-auto pb-1">
+            <FilterChip active={!country} onClick={() => setCountry("")}>
+              {COPY.allCountries}
             </FilterChip>
-          ))}
+            {chipCountries.map((item) => (
+              <FilterChip
+                key={item.code}
+                active={country === item.code}
+                onClick={() => setCountry(item.code === country ? "" : item.code)}
+              >
+                {item.flag} {item.nameLocal}
+              </FilterChip>
+            ))}
+          </div>
+          {allCountries.length ? (
+            <select
+              value={country}
+              onChange={(event) => setCountry(event.target.value)}
+              className="h-9 max-w-xs rounded-full border border-white/10 bg-[#1a1d2b] px-3 text-sm text-foreground"
+              aria-label={COPY.countries}
+            >
+              <option value="">{COPY.allCountries}</option>
+              {allCountries.map((item) => (
+                <option key={item.code} value={item.code}>
+                  {item.flag} {item.nameLocal} ({item.count})
+                </option>
+              ))}
+            </select>
+          ) : null}
         </div>
       ) : null}
 
@@ -165,6 +195,9 @@ export function ChannelExplorer({
         </div>
       ) : items.length ? (
         <>
+          {loading ? (
+            <p className="text-xs text-muted-foreground">{COPY.loading}</p>
+          ) : null}
           <ChannelGrid items={items} />
           {items.length < total ? (
             <div className="flex justify-center pt-2">

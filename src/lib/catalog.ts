@@ -62,6 +62,32 @@ export type Catalog = {
   stats: CatalogStats;
 };
 
+const PINNED_COUNTRIES = [
+  "TH",
+  "ID",
+  "JP",
+  "KR",
+  "VN",
+  "MY",
+  "SG",
+  "CN",
+  "TW",
+  "HK",
+  "PH",
+  "LA",
+  "KH",
+  "MM",
+  "US",
+  "UK",
+  "IN",
+  "AU",
+];
+
+function countryPinRank(code: string) {
+  const index = PINNED_COUNTRIES.indexOf(code);
+  return index === -1 ? PINNED_COUNTRIES.length + 1 : index;
+}
+
 const TTL_MS = 45 * 60 * 1000;
 let cache: { at: number; data: Catalog } | null = null;
 let inflight: Promise<Catalog> | null = null;
@@ -79,11 +105,19 @@ function qualityScore(q: string | null) {
 }
 
 function sortStreams(streams: StreamSource[]) {
-  return [...streams].sort((a, b) => {
+  const ranked = [...streams].sort((a, b) => {
     const https = Number(b.url.startsWith("https://")) - Number(a.url.startsWith("https://"));
     if (https) return https;
     return qualityScore(b.quality) - qualityScore(a.quality);
   });
+  const seen = new Set<string>();
+  const unique: StreamSource[] = [];
+  for (const stream of ranked) {
+    if (seen.has(stream.url)) continue;
+    seen.add(stream.url);
+    unique.push(stream);
+  }
+  return unique;
 }
 
 async function fetchJson<T>(url: string): Promise<T> {
@@ -210,7 +244,12 @@ async function buildCatalog(): Promise<Catalog> {
         count,
       };
     })
-    .sort((a, b) => b.count - a.count || a.nameLocal.localeCompare(b.nameLocal, "th"));
+    .sort(
+      (a, b) =>
+        countryPinRank(a.code) - countryPinRank(b.code) ||
+        b.count - a.count ||
+        a.nameLocal.localeCompare(b.nameLocal, "th")
+    );
 
   const categoryMeta: CategoryMeta[] = [...categoryCounts.entries()]
     .map(([id, count]) => {
@@ -306,8 +345,16 @@ export function queryChannels(catalog: Catalog, query: ChannelQuery) {
   return { items: page, total, offset, limit };
 }
 
+export function decodeChannelParam(id: string) {
+  try {
+    return decodeURIComponent(id);
+  } catch {
+    return id;
+  }
+}
+
 export function getChannel(catalog: Catalog, id: string) {
-  return catalog.byId.get(id) ?? null;
+  return catalog.byId.get(decodeChannelParam(id)) ?? catalog.byId.get(id) ?? null;
 }
 
 export function relatedChannels(catalog: Catalog, channel: StoredChannel, limit = 12) {

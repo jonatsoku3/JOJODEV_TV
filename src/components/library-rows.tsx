@@ -30,8 +30,20 @@ export function LibraryRows({
 
   useEffect(() => {
     if (!ready) return;
-    if (showFavorites) fetchByIds(favoriteIds).then(setFavorites);
-    if (showRecent) fetchByIds(recentIds).then(setRecent);
+    let cancelled = false;
+    if (showFavorites) {
+      fetchByIds(favoriteIds).then((data) => {
+        if (!cancelled) setFavorites(data);
+      });
+    }
+    if (showRecent) {
+      fetchByIds(recentIds).then((data) => {
+        if (!cancelled) setRecent(data);
+      });
+    }
+    return () => {
+      cancelled = true;
+    };
   }, [ready, favoriteIds, recentIds, showFavorites, showRecent]);
 
   if (!ready) return null;

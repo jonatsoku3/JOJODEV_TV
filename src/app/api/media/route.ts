@@ -27,7 +27,8 @@ export async function GET(request: Request) {
   }
 
   try {
-    const range = request.headers.get("range");
+    const playlistHint = looksLikePlaylist(target, null, "");
+    const range = playlistHint ? null : request.headers.get("range");
     const { res, finalUrl } = await fetchUpstream(target, {
       ua: ua || DEFAULT_UA,
       referrer,
@@ -42,13 +43,12 @@ export async function GET(request: Request) {
     }
 
     const contentType = res.headers.get("content-type");
-    if (looksLikePlaylist(finalUrl, contentType, "")) {
-      const text = await res.text();
-      const start = text.slice(0, 16);
-      const body = looksLikePlaylist(finalUrl, contentType, start)
-        ? rewritePlaylist(text, finalUrl, { ua, referrer })
-        : text;
-      return new Response(body, {
+    const buf = Buffer.from(await res.arrayBuffer());
+    const start = buf.subarray(0, 16).toString("utf8");
+
+    if (looksLikePlaylist(finalUrl, contentType, start)) {
+      const rewritten = rewritePlaylist(buf.toString("utf8"), finalUrl, { ua, referrer });
+      return new Response(rewritten, {
         status: 200,
         headers: {
           ...CORS_HEADERS,
@@ -61,15 +61,14 @@ export async function GET(request: Request) {
     const headers = new Headers(CORS_HEADERS);
     headers.set("Cache-Control", "public, max-age=15");
     if (contentType) headers.set("Content-Type", contentType);
-    const len = res.headers.get("content-length");
+    headers.set("Content-Length", String(buf.byteLength));
     const cr = res.headers.get("content-range");
     const ar = res.headers.get("accept-ranges");
-    if (len) headers.set("Content-Length", len);
     if (cr) headers.set("Content-Range", cr);
     if (ar) headers.set("Accept-Ranges", ar);
     else headers.set("Accept-Ranges", "bytes");
 
-    return new Response(res.body, { status: res.status, headers });
+    return new Response(buf, { status: res.status, headers });
   } catch (error) {
     const message = error instanceof Error ? error.message : "media error";
     return Response.json({ error: message }, { status: 502, headers: CORS_HEADERS });

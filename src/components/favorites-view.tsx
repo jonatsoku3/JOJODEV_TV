@@ -10,31 +10,30 @@ import type { ChannelSummary } from "@/lib/types";
 export function FavoritesView() {
   const { ready, favoriteIds } = useLibrary();
   const [items, setItems] = useState<ChannelSummary[]>([]);
-  const [loaded, setLoaded] = useState(false);
+  const [loadedFor, setLoadedFor] = useState("");
+  const idsKey = favoriteIds.join(",");
 
   useEffect(() => {
-    if (!ready || favoriteIds.length === 0) {
-      return;
-    }
+    if (!ready || !idsKey) return;
     let cancelled = false;
-    fetch(`/api/channels?ids=${favoriteIds.map(encodeURIComponent).join(",")}`)
+    fetch(`/api/channels?ids=${idsKey.split(",").map(encodeURIComponent).join(",")}`)
       .then((res) => res.json())
       .then((data: { items: ChannelSummary[] }) => {
         if (!cancelled) {
           setItems(data.items);
-          setLoaded(true);
+          setLoadedFor(idsKey);
         }
       })
       .catch(() => {
         if (!cancelled) {
           setItems([]);
-          setLoaded(true);
+          setLoadedFor(idsKey);
         }
       });
     return () => {
       cancelled = true;
     };
-  }, [ready, favoriteIds]);
+  }, [ready, idsKey]);
 
   if (!ready) {
     return <div className="h-64 animate-pulse rounded-3xl bg-white/5" />;
@@ -42,7 +41,7 @@ export function FavoritesView() {
   if (!favoriteIds.length) {
     return <EmptyState title={COPY.emptyFavorites} body={COPY.emptyFavoritesBody} />;
   }
-  if (!loaded) {
+  if (loadedFor !== idsKey) {
     return <div className="h-64 animate-pulse rounded-3xl bg-white/5" />;
   }
   if (!items.length) {

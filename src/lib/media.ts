@@ -65,10 +65,16 @@ export function rewritePlaylist(
       const trimmed = line.trim();
       if (!trimmed) return line;
       if (trimmed.startsWith("#")) {
-        return line.replace(/URI=(["'])([^"']+)\1/gi, (_m, quote, uri) => {
-          const abs = new URL(uri, playlistUrl).toString();
-          return `URI=${quote}${mediaPath({ url: abs, ua: grant.ua, referrer: grant.referrer })}${quote}`;
-        });
+        return line
+          .replace(/URI=(["'])([^"']+)\1/gi, (_m, quote: string, uri: string) => {
+            const abs = new URL(uri, playlistUrl).toString();
+            return `URI=${quote}${mediaPath({ url: abs, ua: grant.ua, referrer: grant.referrer })}${quote}`;
+          })
+          .replace(/URI=([^,"'\s]+)/gi, (full, uri: string) => {
+            if (full.includes("/api/media")) return full;
+            const abs = new URL(uri, playlistUrl).toString();
+            return `URI="${mediaPath({ url: abs, ua: grant.ua, referrer: grant.referrer })}"`;
+          });
       }
       const abs = new URL(trimmed, playlistUrl).toString();
       return mediaPath({ url: abs, ua: grant.ua, referrer: grant.referrer });

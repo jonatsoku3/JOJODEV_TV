@@ -71,7 +71,7 @@ export function SiteHeader() {
               </SheetTitle>
             </SheetHeader>
             <div className="space-y-4 px-4">
-              <SearchForm />
+              <SearchForm onNavigate={() => setMenuOpen(false)} />
               <nav className="grid gap-1">
                 {NAV.map((item) => {
                   const Icon = item.icon;

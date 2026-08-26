@@ -12,20 +12,20 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const catalog = await getCatalog();
-  const channel = getChannel(catalog, decodeURIComponent(id));
+  const channel = getChannel(catalog, id);
   return { title: channel?.name ?? COPY.brand };
 }
 
 export default async function WatchPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const catalog = await getCatalog();
-  const channel = getChannel(catalog, decodeURIComponent(id));
+  const channel = getChannel(catalog, id);
   if (!channel) notFound();
   const related = relatedChannels(catalog, channel);
 
   return (
     <div className="space-y-8">
-      <LivePlayer channelId={channel.id} streams={channel.streams} />
+          <LivePlayer key={channel.id} channelId={channel.id} streams={channel.streams} />
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="space-y-3">
           <div className="flex flex-wrap items-center gap-2">

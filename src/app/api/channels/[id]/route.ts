@@ -7,7 +7,7 @@ export async function GET(_req: Request, ctx: { params: Promise<{ id: string }> 
   try {
     const { id } = await ctx.params;
     const catalog = await getCatalog();
-    const channel = getChannel(catalog, decodeURIComponent(id));
+    const channel = getChannel(catalog, id);
     if (!channel) {
       return Response.json({ error: "not found" }, { status: 404 });
     }

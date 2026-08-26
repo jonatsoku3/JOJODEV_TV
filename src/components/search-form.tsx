@@ -10,10 +10,12 @@ export function SearchForm({
   defaultValue = "",
   className,
   autoFocus = false,
+  onNavigate,
 }: {
   defaultValue?: string;
   className?: string;
   autoFocus?: boolean;
+  onNavigate?: () => void;
 }) {
   const router = useRouter();
 
@@ -25,6 +27,7 @@ export function SearchForm({
         event.preventDefault();
         const form = new FormData(event.currentTarget);
         const q = String(form.get("q") || "").trim();
+        onNavigate?.();
         router.push(q ? `/search?q=${encodeURIComponent(q)}` : "/browse");
       }}
     >
