@@ -94,7 +94,7 @@ export function looksLikePlaylist(url: string, contentType: string | null, bodyS
 
 export async function fetchUpstream(
   url: string,
-  init: { ua?: string; referrer?: string; range?: string | null }
+  init: { ua?: string; referrer?: string; range?: string | null; timeoutMs?: number }
 ) {
   let current = assertSafeMediaUrl(url).toString();
   for (let hop = 0; hop < 5; hop++) {
@@ -117,7 +117,7 @@ export async function fetchUpstream(
       headers,
       redirect: "manual",
       cache: "no-store",
-      signal: AbortSignal.timeout(25000),
+      signal: AbortSignal.timeout(init.timeoutMs ?? 25000),
     });
 
     if ([301, 302, 303, 307, 308].includes(res.status)) {
