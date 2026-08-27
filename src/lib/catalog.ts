@@ -106,9 +106,9 @@ function qualityScore(q: string | null) {
 
 function sortStreams(streams: StreamSource[]) {
   const ranked = [...streams].sort((a, b) => {
-    const https = Number(b.url.startsWith("https://")) - Number(a.url.startsWith("https://"));
-    if (https) return https;
-    return qualityScore(b.quality) - qualityScore(a.quality);
+    const quality = qualityScore(b.quality) - qualityScore(a.quality);
+    if (quality) return quality;
+    return Number(b.url.startsWith("https://")) - Number(a.url.startsWith("https://"));
   });
   const seen = new Set<string>();
   const unique: StreamSource[] = [];

@@ -39,7 +39,9 @@ export const COPY = {
   backHome: "กลับหน้าแรก",
   related: "ช่องใกล้เคียง",
   streams: "สัญญาณ",
-  quality: "คุณภาพ",
+  qualityMax: "ชัดสุด",
+  qualityAuto: "อัตโนมัติ",
+  playbackHint: "เล่นที่ความละเอียดสูงสุดที่สัญญาณมี",
   website: "เว็บไซต์",
   addFavorite: "เก็บเป็นรายการโปรด",
   removeFavorite: "นำออกจากรายการโปรด",
@@ -55,7 +57,7 @@ export const COPY = {
   allCountries: "ทุกประเทศ",
   allCategories: "ทุกหมวด",
   menu: "เมนู",
-  playerHint: "กด F เพื่อเต็มจอ · Space เพื่อเล่น/หยุด",
+  playerHint: "กด F เพื่อเต็มจอ · Space เพื่อเล่น/หยุด · เริ่มที่ความละเอียดสูงสุด",
 } as const;
 
 export const COUNTRY_LOCAL: Record<string, string> = {
