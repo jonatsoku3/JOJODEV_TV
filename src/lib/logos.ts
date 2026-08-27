@@ -42,17 +42,33 @@ function hostMatches(host: string, list: string[]) {
 export function compactLogoUrl(url: string) {
   try {
     const parsed = new URL(url);
-    if (parsed.hostname !== "upload.wikimedia.org") return url;
-    const path = parsed.pathname;
-    if (path.includes("/thumb/")) return url;
-    const match = path.match(/^\/(wikipedia\/[^/]+)\/([0-9a-f])\/([0-9a-f]{2})\/([^/]+)$/i);
-    if (!match) return url;
-    const [, wiki, a, ab, file] = match;
-    if (/\.svg$/i.test(file)) {
-      return `https://upload.wikimedia.org/${wiki}/thumb/${a}/${ab}/${file}/256px-${file}.png`;
+    const host = parsed.hostname.toLowerCase();
+
+    if (host === "upload.wikimedia.org") {
+      parsed.pathname = parsed.pathname.replace(/\/(\d+)px-/i, (full, n) =>
+        Number(n) > 256 ? "/256px-" : full,
+      );
+      const path = parsed.pathname;
+      if (!path.includes("/thumb/")) {
+        const match = path.match(/^\/(wikipedia\/[^/]+)\/([0-9a-f])\/([0-9a-f]{2})\/([^/]+)$/i);
+        if (match) {
+          const [, wiki, a, ab, file] = match;
+          if (/\.svg$/i.test(file)) {
+            return `https://upload.wikimedia.org/${wiki}/thumb/${a}/${ab}/${file}/256px-${file}.png`;
+          }
+          if (/\.(png|jpe?g|gif|webp)$/i.test(file)) {
+            return `https://upload.wikimedia.org/${wiki}/thumb/${a}/${ab}/${file}/256px-${file}`;
+          }
+        }
+      }
+      return parsed.toString();
     }
-    if (/\.(png|jpe?g|gif|webp)$/i.test(file)) {
-      return `https://upload.wikimedia.org/${wiki}/thumb/${a}/${ab}/${file}/256px-${file}`;
+
+    if (host.endsWith("wikia.nocookie.net") || host.endsWith("wikia.com")) {
+      if (/\/scale-to-width-down\/\d+/i.test(parsed.pathname)) {
+        parsed.pathname = parsed.pathname.replace(/\/scale-to-width-down\/\d+/i, "/scale-to-width-down/256");
+      }
+      return parsed.toString();
     }
   } catch {
     /* keep original */

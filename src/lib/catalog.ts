@@ -387,9 +387,9 @@ const HERO_IDS = [
 ];
 
 export function getFeatured(catalog: Catalog) {
-  const byCountry = (code: string, limit = 18) =>
+  const byCountry = (code: string, limit = 10) =>
     catalog.channels.filter((c) => c.country === code).slice(0, limit).map(summarize);
-  const byCategory = (id: string, limit = 18) =>
+  const byCategory = (id: string, limit = 10) =>
     catalog.channels.filter((c) => c.categories.includes(id)).slice(0, limit).map(summarize);
 
   const hero =
