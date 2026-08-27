@@ -41,7 +41,7 @@ export function ChannelRow({
           <ChannelCard
             key={channel.id}
             channel={channel}
-            priority={index < 8}
+            priority={index < 3}
             className="w-[min(72vw,280px)] shrink-0 sm:w-[min(38vw,240px)] md:w-[220px] lg:w-[236px] xl:w-[252px] tv:w-[300px]"
           />
         ))}

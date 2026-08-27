@@ -1,5 +1,5 @@
 import { categoryName, countryName } from "@/lib/i18n";
-import { logoPath } from "@/lib/signing";
+import { compactLogoUrl, publicLogoUrl, scoreLogoUrl } from "@/lib/logos";
 import type {
   CatalogStats,
   CategoryMeta,
@@ -145,13 +145,12 @@ function pickLogos(logos: RawLogo[]) {
     const format = (logo.format || "").toUpperCase();
     if (format === "SVG") score += 140;
     if (format === "PNG" || format === "WEBP") score += 50;
-    const host = logo.url.toLowerCase();
-    if (host.includes("imgur.com") || host.includes("i.ibb.co")) score -= 850;
+    score += scoreLogoUrl(logo.url);
     const prev = best.get(logo.channel);
     if (!prev || score > prev.score) best.set(logo.channel, { url: logo.url, score });
   }
   const urls = new Map<string, string>();
-  for (const [id, value] of best) urls.set(id, value.url);
+  for (const [id, value] of best) urls.set(id, compactLogoUrl(value.url));
   return urls;
 }
 
@@ -164,7 +163,7 @@ function toSummary(channel: StoredChannel): ChannelSummary {
     countryNameLocal: channel.countryNameLocal,
     flag: channel.flag,
     categories: channel.categories,
-    logo: channel.logo ? logoPath(channel.logo) : null,
+    logo: publicLogoUrl(channel.logo),
     quality: channel.quality,
     streamCount: channel.streamCount,
   };

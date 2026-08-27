@@ -17,22 +17,50 @@ export function ChannelLogo({
   className?: string;
   priority?: boolean;
 }) {
+  return (
+    <ChannelLogoInner
+      key={logo || name}
+      name={name}
+      logo={logo}
+      seed={seed}
+      className={className}
+      priority={priority}
+    />
+  );
+}
+
+function ChannelLogoInner({
+  name,
+  logo,
+  seed,
+  className,
+  priority,
+}: {
+  name: string;
+  logo: string | null;
+  seed?: string;
+  className?: string;
+  priority: boolean;
+}) {
   const [ready, setReady] = useState(false);
   const [failed, setFailed] = useState(false);
   const readyRef = useRef(false);
+  const timerRef = useRef<number>(0);
   const initial = name.trim().slice(0, 2).toUpperCase();
   const showLogo = Boolean(logo) && !failed;
 
   useEffect(() => {
-    readyRef.current = false;
-    setReady(false);
-    setFailed(false);
-    if (!logo) return;
-    const timer = window.setTimeout(() => {
+    return () => {
+      if (timerRef.current) window.clearTimeout(timerRef.current);
+    };
+  }, []);
+
+  function armTimeout() {
+    if (timerRef.current) window.clearTimeout(timerRef.current);
+    timerRef.current = window.setTimeout(() => {
       if (!readyRef.current) setFailed(true);
-    }, 3500);
-    return () => window.clearTimeout(timer);
-  }, [logo]);
+    }, 8000);
+  }
 
   return (
     <div
@@ -61,11 +89,13 @@ export function ChannelLogo({
             ready ? "opacity-100" : "opacity-0",
           )}
           loading={priority ? "eager" : "lazy"}
-          fetchPriority={priority ? "high" : "low"}
+          fetchPriority={priority ? "high" : "auto"}
           decoding="async"
           referrerPolicy="no-referrer"
+          onLoadStart={armTimeout}
           onLoad={(event) => {
             const img = event.currentTarget;
+            if (timerRef.current) window.clearTimeout(timerRef.current);
             if (img.naturalWidth < 8 || img.naturalHeight < 8) {
               setFailed(true);
               setReady(false);
@@ -75,6 +105,7 @@ export function ChannelLogo({
             setReady(true);
           }}
           onError={() => {
+            if (timerRef.current) window.clearTimeout(timerRef.current);
             setFailed(true);
             setReady(false);
           }}
