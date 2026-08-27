@@ -22,7 +22,7 @@ export function ChannelRow({
   return (
     <section className="space-y-3">
       <div className="flex items-end justify-between gap-3">
-        <h2 className="flex items-center gap-2.5 font-heading text-xl font-semibold tracking-tight">
+        <h2 className="flex items-center gap-2.5 font-heading text-lg font-semibold tracking-tight sm:text-xl tv:text-2xl">
           <span className={cn("h-5 w-1.5 rounded-full bg-gradient-to-b", bar)} />
           {title}
         </h2>
@@ -36,9 +36,13 @@ export function ChannelRow({
           </Link>
         ) : null}
       </div>
-      <div className="no-scrollbar -mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0">
+      <div className="no-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0">
         {items.map((channel) => (
-          <ChannelCard key={channel.id} channel={channel} />
+          <ChannelCard
+            key={channel.id}
+            channel={channel}
+            className="w-[min(72vw,280px)] shrink-0 sm:w-[min(38vw,240px)] md:w-[220px] lg:w-[236px] xl:w-[252px] tv:w-[300px]"
+          />
         ))}
       </div>
     </section>

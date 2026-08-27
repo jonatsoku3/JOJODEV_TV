@@ -29,13 +29,13 @@ export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-white/8 bg-[#0b0714]/70 backdrop-blur-2xl">
-      <div className="mx-auto flex h-[4.75rem] w-full max-w-7xl items-center gap-3 px-4 sm:px-6">
-        <Link href="/" className="shrink-0">
+    <header className="sticky top-0 z-40 border-b border-white/8 bg-[#0b0714]/70 pt-[env(safe-area-inset-top)] backdrop-blur-2xl">
+      <div className="app-width flex h-16 items-center gap-3 sm:h-[4.75rem] tv:h-20">
+        <Link href="/" className="shrink-0 rounded-xl focus-visible:outline-offset-4">
           <BrandMark />
         </Link>
 
-        <nav className="hidden items-center gap-1 md:flex">
+        <nav className="hidden items-center gap-1 lg:flex tv:gap-2">
           {NAV.map((item) => {
             const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
             return (
@@ -43,7 +43,7 @@ export function SiteHeader() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "rounded-full px-3.5 py-1.5 text-sm transition",
+                  "rounded-full px-3.5 py-2 text-sm transition tv:px-5 tv:py-2.5 tv:text-base",
                   active
                     ? "bg-gradient-to-r from-rose-500/30 to-amber-400/20 text-white ring-1 ring-white/15"
                     : "text-white/65 hover:bg-white/8 hover:text-white"
@@ -55,12 +55,12 @@ export function SiteHeader() {
           })}
         </nav>
 
-        <SearchForm className="ml-auto hidden max-w-md flex-1 md:block" />
+        <SearchForm className="ml-auto hidden max-w-md flex-1 lg:block tv:max-w-xl" />
 
         <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
           <SheetTrigger
             render={
-              <Button variant="ghost" size="icon" className="ml-auto md:hidden" />
+              <Button variant="ghost" size="icon" className="ml-auto size-11 lg:hidden" />
             }
           >
             <Menu className="size-5" />
@@ -84,7 +84,7 @@ export function SiteHeader() {
                       href={item.href}
                       onClick={() => setMenuOpen(false)}
                       className={cn(
-                        "flex items-center gap-3 rounded-xl px-3 py-3 text-sm hover:bg-white/8",
+                        "flex min-h-12 items-center gap-3 rounded-xl px-3 py-3 text-base hover:bg-white/8",
                         active && "bg-gradient-to-r from-rose-500/25 to-amber-400/15 text-white"
                       )}
                     >

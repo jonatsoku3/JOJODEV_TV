@@ -22,7 +22,7 @@ export function HeroShowcase({
         <div className="absolute top-10 left-[12%] size-64 rounded-full bg-rose-400/20 blur-3xl" />
         <div className="absolute right-[8%] bottom-0 size-80 rounded-full bg-amber-300/15 blur-3xl" />
       </div>
-      <div className="relative mx-auto grid w-full max-w-7xl gap-10 px-4 py-10 sm:px-6 sm:py-14 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:py-16">
+      <div className="app-width relative grid gap-10 py-10 sm:py-14 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:py-16 tv:gap-16 tv:py-20">
         <div className="space-y-6">
           <div className="flex flex-wrap items-center gap-2">
             <Badge className="live-pulse h-6 gap-1.5 rounded-full bg-primary px-3 text-[11px] tracking-[0.18em] uppercase">
@@ -37,7 +37,7 @@ export function HeroShowcase({
           <div>
             <BrandMark size="lg" />
             <p className="mt-4 text-sm font-medium text-rose-200/90">{COPY.tagline}</p>
-            <h1 className="mt-2 max-w-xl font-heading text-3xl font-semibold tracking-tight sm:text-5xl">
+            <h1 className="mt-2 max-w-xl font-heading text-[clamp(1.6rem,4vw,3.5rem)] font-semibold tracking-tight">
               <span className="mt-1 block text-white/90">
                 {channel.countryNameLocal} · {channel.name}
               </span>
@@ -73,7 +73,7 @@ export function HeroShowcase({
               href={`/watch/${encodeURIComponent(channel.id)}`}
               className={cn(
                 buttonVariants({ size: "lg" }),
-                "h-11 rounded-full bg-primary px-6 text-sm shadow-[0_10px_40px_oklch(0.7_0.2_18_/_0.45)] hover:bg-primary/90"
+                "h-12 min-h-12 rounded-full bg-primary px-6 text-sm shadow-[0_10px_40px_oklch(0.7_0.2_18_/_0.45)] hover:bg-primary/90 tv:h-14 tv:px-8 tv:text-base"
               )}
             >
               <Play className="size-4 fill-current" />
@@ -83,7 +83,7 @@ export function HeroShowcase({
               href="/browse"
               className={cn(
                 buttonVariants({ variant: "outline", size: "lg" }),
-                "h-11 rounded-full border-white/20 bg-white/5 px-6 text-sm backdrop-blur"
+                "h-12 min-h-12 rounded-full border-white/20 bg-white/5 px-6 text-sm backdrop-blur tv:h-14 tv:px-8 tv:text-base"
               )}
             >
               {COPY.browse}
@@ -99,8 +99,8 @@ export function HeroShowcase({
                 seed={channel.id}
                 className="aspect-[16/10] w-full"
               />
-              <div className="absolute inset-0 grid place-items-center bg-black/0 transition group-hover:bg-black/25">
-                <span className="grid size-16 place-items-center rounded-full bg-white/90 text-black opacity-0 shadow-xl transition group-hover:opacity-100">
+              <div className="absolute inset-0 grid place-items-center bg-black/0 transition group-hover:bg-black/25 group-focus-visible:bg-black/25">
+                <span className="grid size-16 place-items-center rounded-full bg-white/90 text-black opacity-0 shadow-xl transition group-hover:opacity-100 group-focus-visible:opacity-100 touch:opacity-100">
                   <Play className="size-7 fill-current" />
                 </span>
               </div>

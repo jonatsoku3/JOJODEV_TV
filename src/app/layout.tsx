@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist_Mono, Noto_Sans_Thai, Outfit } from "next/font/google";
 import { AmbientBackdrop } from "@/components/ambient-backdrop";
 import { Providers } from "@/components/providers";
@@ -29,6 +29,14 @@ export const metadata: Metadata = {
     template: `%s · ${COPY.brand}`,
   },
   description: COPY.subtitle,
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  viewportFit: "cover",
+  themeColor: "#08060f",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

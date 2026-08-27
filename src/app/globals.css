@@ -3,6 +3,8 @@
 @import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
+@custom-variant tv (@media (min-width: 1920px));
+@custom-variant touch (@media (hover: none));
 
 @theme inline {
   --color-background: var(--background);
@@ -119,14 +121,55 @@
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-transparent text-foreground;
+    @apply border-border;
   }
   html {
     @apply font-sans;
     color-scheme: dark;
+    font-size: clamp(15px, 0.7rem + 0.45vw, 20px);
+    overflow-x: hidden;
+  }
+  @media (min-width: 1920px) {
+    html {
+      font-size: clamp(18px, 1.05vw, 28px);
+    }
+  }
+  body {
+    @apply bg-transparent text-foreground;
+    overflow-x: hidden;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 3px solid oklch(0.84 0.13 85);
+    outline-offset: 3px;
+  }
+}
+
+.app-width {
+  width: 100%;
+  max-width: 80rem;
+  margin-inline: auto;
+  padding-inline: max(1rem, env(safe-area-inset-left)) max(1rem, env(safe-area-inset-right));
+}
+@media (min-width: 768px) {
+  .app-width {
+    padding-inline: max(1.5rem, env(safe-area-inset-left)) max(1.5rem, env(safe-area-inset-right));
+  }
+}
+@media (min-width: 1280px) {
+  .app-width {
+    max-width: 90rem;
+  }
+}
+@media (min-width: 1920px) {
+  .app-width {
+    max-width: 118rem;
+    padding-inline: 2.5rem;
   }
 }
 

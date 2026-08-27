@@ -25,7 +25,7 @@ export default async function WatchPage({ params }: { params: Promise<{ id: stri
   const related = relatedChannels(catalog, channel);
 
   return (
-    <PageShell className="max-w-[110rem] space-y-8">
+    <PageShell className="space-y-8">
       <LivePlayer key={channel.id} channelId={channel.id} streams={channel.streams} />
       <div className="flex flex-col gap-4 rounded-3xl bg-white/4 p-5 ring-1 ring-white/10 lg:flex-row lg:items-start lg:justify-between">
         <div className="space-y-3">

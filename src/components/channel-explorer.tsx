@@ -131,7 +131,7 @@ export function ChannelExplorer({
           value={q}
           onChange={(event) => setQ(event.target.value)}
           placeholder={COPY.searchPlaceholder}
-          className="h-10 max-w-md rounded-full border-white/12 bg-white/8 px-4"
+          className="h-11 w-full max-w-md rounded-full border-white/12 bg-white/8 px-4 text-base sm:h-10 sm:text-sm tv:h-12"
         />
       </div>
 
@@ -155,7 +155,7 @@ export function ChannelExplorer({
             <select
               value={country}
               onChange={(event) => setCountry(event.target.value)}
-              className="h-9 max-w-xs rounded-full border border-white/12 bg-[#1a1228] px-3 text-sm text-foreground"
+              className="h-11 max-w-xs rounded-full border border-white/12 bg-[#1a1228] px-3 text-base text-foreground sm:h-9 sm:text-sm"
               aria-label={COPY.countries}
             >
               <option value="">{COPY.allCountries}</option>
@@ -229,7 +229,7 @@ function FilterChip({
       type="button"
       onClick={onClick}
       className={cn(
-        "shrink-0 rounded-full px-3 py-1.5 text-sm ring-1 transition",
+        "min-h-11 shrink-0 rounded-full px-3.5 py-2 text-sm ring-1 transition tv:min-h-12 tv:px-4 tv:text-base",
         active
           ? "bg-gradient-to-r from-rose-500 to-amber-400 text-white ring-transparent"
           : "bg-white/6 text-white/70 ring-white/10 hover:bg-white/10 hover:text-white"

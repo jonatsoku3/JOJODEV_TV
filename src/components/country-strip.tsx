@@ -23,7 +23,7 @@ export function CountryStrip({ countries }: { countries: CountryMeta[] }) {
           <Link
             key={country.code}
             href={`/country/${country.code}`}
-            className="group flex min-w-[132px] snap-start items-center gap-3 rounded-2xl px-3 py-2.5 ring-1 ring-white/10 transition hover:-translate-y-0.5 hover:ring-amber-300/40"
+            className="group flex min-h-12 min-w-[148px] snap-start items-center gap-3 rounded-2xl px-3 py-2.5 ring-1 ring-white/10 transition hover:-translate-y-0.5 hover:ring-amber-300/40 tv:min-w-[200px]"
             style={{
               background: `linear-gradient(145deg, oklch(0.32 0.09 ${hueFromId(country.code)} / 0.5), oklch(0.2 0.04 292 / 0.88))`,
             }}

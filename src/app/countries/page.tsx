@@ -21,14 +21,14 @@ export default async function CountriesPage() {
           {catalog.stats.channels.toLocaleString()} {COPY.channelsCount}
         </p>
       </div>
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 tv:grid-cols-7">
         {catalog.countries.map((country) => {
           const hue = hueFromId(country.code);
           return (
             <Link
               key={country.code}
               href={`/country/${country.code}`}
-              className="group overflow-hidden rounded-2xl p-4 ring-1 ring-white/10 transition hover:-translate-y-1 hover:ring-amber-200/45"
+              className="group min-h-24 overflow-hidden rounded-2xl p-4 ring-1 ring-white/10 transition hover:-translate-y-1 hover:ring-amber-200/45 focus-visible:ring-amber-200/60"
               style={{
                 background: `linear-gradient(160deg, oklch(0.32 0.1 ${hue} / 0.55), oklch(0.2 0.04 292 / 0.9))`,
               }}

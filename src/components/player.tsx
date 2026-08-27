@@ -201,7 +201,7 @@ export function LivePlayer({
 
   return (
     <div className="overflow-hidden rounded-[1.6rem] bg-black ring-1 ring-white/12 shadow-[0_24px_80px_rgba(0,0,0,0.45)]">
-      <div className="relative aspect-video min-h-[220px] sm:min-h-[360px] lg:min-h-[520px]">
+      <div className="relative aspect-video min-h-[200px] w-full sm:min-h-[280px] lg:min-h-[420px] tv:min-h-[640px]">
         <video
           ref={videoRef}
           className="size-full bg-black object-contain [image-rendering:auto]"
