@@ -1,4 +1,5 @@
 import { categoryName, countryName } from "@/lib/i18n";
+import { logoPath } from "@/lib/signing";
 import type {
   CatalogStats,
   CategoryMeta,
@@ -134,12 +135,18 @@ function pickLogos(logos: RawLogo[]) {
   const best = new Map<string, { url: string; score: number }>();
   for (const logo of logos) {
     if (!logo.channel || !logo.url) continue;
+    if (!/^https?:\/\//i.test(logo.url)) continue;
     let score = 0;
     if (logo.in_use) score += 1000;
-    score += Math.min(logo.width || 0, 1200) / 8;
+    const width = logo.width || 256;
+    if (width >= 64 && width <= 512) score += 220;
+    else if (width > 512) score += Math.max(40, 220 - (width - 512) / 6);
+    else score += width / 2;
     const format = (logo.format || "").toUpperCase();
-    if (format === "SVG") score += 80;
-    if (format === "PNG") score += 40;
+    if (format === "SVG") score += 140;
+    if (format === "PNG" || format === "WEBP") score += 50;
+    const host = logo.url.toLowerCase();
+    if (host.includes("imgur.com") || host.includes("i.ibb.co")) score -= 850;
     const prev = best.get(logo.channel);
     if (!prev || score > prev.score) best.set(logo.channel, { url: logo.url, score });
   }
@@ -157,7 +164,7 @@ function toSummary(channel: StoredChannel): ChannelSummary {
     countryNameLocal: channel.countryNameLocal,
     flag: channel.flag,
     categories: channel.categories,
-    logo: channel.logo,
+    logo: channel.logo ? logoPath(channel.logo) : null,
     quality: channel.quality,
     streamCount: channel.streamCount,
   };

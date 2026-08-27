@@ -37,10 +37,11 @@ export function ChannelRow({
         ) : null}
       </div>
       <div className="no-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0">
-        {items.map((channel) => (
+        {items.map((channel, index) => (
           <ChannelCard
             key={channel.id}
             channel={channel}
+            priority={index < 8}
             className="w-[min(72vw,280px)] shrink-0 sm:w-[min(38vw,240px)] md:w-[220px] lg:w-[236px] xl:w-[252px] tv:w-[300px]"
           />
         ))}

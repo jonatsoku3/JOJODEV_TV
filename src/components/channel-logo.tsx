@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { cardTint } from "@/lib/palette";
 import { cn } from "@/lib/utils";
 
@@ -9,20 +9,29 @@ export function ChannelLogo({
   logo,
   seed,
   className,
+  priority = false,
 }: {
   name: string;
   logo: string | null;
   seed?: string;
   className?: string;
+  priority?: boolean;
 }) {
   const [ready, setReady] = useState(false);
   const [failed, setFailed] = useState(false);
+  const readyRef = useRef(false);
   const initial = name.trim().slice(0, 2).toUpperCase();
   const showLogo = Boolean(logo) && !failed;
 
   useEffect(() => {
+    readyRef.current = false;
     setReady(false);
     setFailed(false);
+    if (!logo) return;
+    const timer = window.setTimeout(() => {
+      if (!readyRef.current) setFailed(true);
+    }, 3500);
+    return () => window.clearTimeout(timer);
   }, [logo]);
 
   return (
@@ -48,10 +57,12 @@ export function ChannelLogo({
           src={logo!}
           alt=""
           className={cn(
-            "absolute inset-[16%] z-20 m-auto max-h-[68%] max-w-[76%] object-contain drop-shadow-[0_8px_24px_rgba(0,0,0,0.45)] transition-opacity",
+            "absolute inset-[16%] z-20 m-auto max-h-[68%] max-w-[76%] object-contain drop-shadow-[0_8px_24px_rgba(0,0,0,0.45)] transition-opacity duration-200",
             ready ? "opacity-100" : "opacity-0",
           )}
-          loading="lazy"
+          loading={priority ? "eager" : "lazy"}
+          fetchPriority={priority ? "high" : "low"}
+          decoding="async"
           referrerPolicy="no-referrer"
           onLoad={(event) => {
             const img = event.currentTarget;
@@ -60,6 +71,7 @@ export function ChannelLogo({
               setReady(false);
               return;
             }
+            readyRef.current = true;
             setReady(true);
           }}
           onError={() => {

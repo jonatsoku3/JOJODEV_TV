@@ -67,6 +67,24 @@ export function verifyMedia(input: {
   }
 }
 
+export function logoPath(url: string) {
+  const sig = createHmac("sha256", secret()).update(`logo\n${url}`).digest("base64url");
+  const q = new URLSearchParams({ u: url, s: sig });
+  return `/api/logo?${q.toString()}`;
+}
+
+export function verifyLogo(url: string, sig: string) {
+  const expected = createHmac("sha256", secret()).update(`logo\n${url}`).digest("base64url");
+  try {
+    const a = Buffer.from(expected);
+    const b = Buffer.from(sig);
+    if (a.length !== b.length) return false;
+    return timingSafeEqual(a, b);
+  } catch {
+    return false;
+  }
+}
+
 export function mediaPath(input: {
   url: string;
   ua?: string;

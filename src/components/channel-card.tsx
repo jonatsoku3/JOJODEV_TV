@@ -8,9 +8,11 @@ import { Play } from "lucide-react";
 export function ChannelCard({
   channel,
   className,
+  priority = false,
 }: {
   channel: ChannelSummary;
   className?: string;
+  priority?: boolean;
 }) {
   return (
     <Link
@@ -19,7 +21,13 @@ export function ChannelCard({
     >
       <article className="overflow-hidden rounded-2xl bg-white/4 ring-1 ring-white/10 transition duration-300 hover:-translate-y-1 hover:ring-amber-200/50 hover:shadow-[0_18px_40px_rgba(0,0,0,0.35)] focus-within:ring-amber-200/60 touch:hover:translate-y-0">
         <div className="relative aspect-[16/10]">
-          <ChannelLogo name={channel.name} logo={channel.logo} seed={channel.id} className="size-full" />
+          <ChannelLogo
+            name={channel.name}
+            logo={channel.logo}
+            seed={channel.id}
+            priority={priority}
+            className="size-full"
+          />
           <span className="live-pulse absolute top-2 left-2 inline-flex items-center gap-1 rounded-full bg-primary px-2 py-0.5 text-[10px] font-semibold tracking-wider text-white uppercase">
             <span className="size-1.5 rounded-full bg-white" />
             {COPY.live}

@@ -97,6 +97,7 @@ export function HeroShowcase({
                 name={channel.name}
                 logo={channel.logo}
                 seed={channel.id}
+                priority
                 className="aspect-[16/10] w-full"
               />
               <div className="absolute inset-0 grid place-items-center bg-black/0 transition group-hover:bg-black/25 group-focus-visible:bg-black/25">
