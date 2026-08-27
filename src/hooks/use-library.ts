@@ -2,8 +2,10 @@
 
 import { useCallback, useMemo, useSyncExternalStore } from "react";
 
-const FAVORITES_KEY = "lokatv:favorites";
-const RECENT_KEY = "lokatv:recent";
+const FAVORITES_KEY = "jojodevtv:favorites";
+const RECENT_KEY = "jojodevtv:recent";
+const LEGACY_FAVORITES_KEY = "lokatv:favorites";
+const LEGACY_RECENT_KEY = "lokatv:recent";
 const MAX_RECENT = 24;
 
 type RecentItem = { id: string; at: number };
@@ -27,8 +29,8 @@ function readJson<T>(key: string, fallback: T): T {
 }
 
 function hydrate() {
-  favorites = readJson<string[]>(FAVORITES_KEY, []);
-  recent = readJson<RecentItem[]>(RECENT_KEY, []);
+  favorites = readJson<string[]>(FAVORITES_KEY, readJson<string[]>(LEGACY_FAVORITES_KEY, []));
+  recent = readJson<RecentItem[]>(RECENT_KEY, readJson<RecentItem[]>(LEGACY_RECENT_KEY, []));
 }
 
 if (typeof window !== "undefined") {

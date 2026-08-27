@@ -1,59 +1,59 @@
-# LokaTV
+# JOJO DEV TV
 
-Situs full-stack untuk menonton **TV siaran langsung dari seluruh dunia**. Katalog diambil dari [iptv-org](https://github.com/iptv-org/api), diputar lewat pemutar HLS, dan dilengkapi proksi media bertanda tangan di server.
+เว็บ full-stack สำหรับดู **ทีวีสดจากทั่วโลก** แคตตาล็อกมาจาก [iptv-org](https://github.com/iptv-org/api) เล่นผ่านเครื่องเล่น HLS และมีพร็อกซีมีเดียที่ลงลายเซ็นฝั่งเซิร์ฟเวอร์
 
-## Fitur
+## ฟีเจอร์
 
-- Ribuan saluran dari puluhan negara, dengan filter negara, kategori, dan pencarian
-- Pemutar langsung (HLS) plus fallback ke sinyal cadangan
-- Halaman beranda dengan baris rekomendasi (TV Thai, berita, olahraga, Jepang, Korea, dan lainnya)
-- Favorit dan riwayat tontonan tersimpan di peramban
-- UI gelap bergaya ruang sinema, siap desktop dan ponsel
-- Bahasa antarmuka: Thai
+- ช่องนับพันจากหลายสิบประเทศ กรองตามประเทศ หมวดหมู่ และการค้นหา
+- เครื่องเล่นสด (HLS) พร้อมสลับไปสัญญาณสำรอง
+- หน้าแรกพร้อมแถวแนะนำ (ทีวีไทย ข่าว กีฬา ญี่ปุ่น เกาหลี และอื่น ๆ)
+- รายการโปรดและประวัติการรับชมเก็บในเบราว์เซอร์
+- UI มืดสไตล์โรงภาพยนตร์ ใช้ได้ทั้งเดสก์ท็อปและมือถือ
+- ภาษาอินเทอร์เฟซ: ไทย
 
-## Menjalankan secara lokal
+## รันบนเครื่องคุณ
 
-Butuh Node.js 20+.
+ต้องมี Node.js 20+
 
 ```bash
 npm install
 npm run dev
 ```
 
-Buka [http://127.0.0.1:43180](http://127.0.0.1:43180).
+เปิด [http://127.0.0.1:43180](http://127.0.0.1:43180)
 
-Produksi:
+โปรดักชัน:
 
 ```bash
 npm run build
 npm start
 ```
 
-## Variabel lingkungan
+## ตัวแปรสภาพแวดล้อม
 
-Salin `.env.example` ke `.env.local` jika ingin mengganti kunci penandatanganan proksi:
+คัดลอก `.env.example` เป็น `.env.local` ถ้าต้องการเปลี่ยนคีย์ลงลายเซ็นพร็อกซี:
 
 ```
-MEDIA_SIGNING_SECRET=ganti-dengan-rahasia-acak
+MEDIA_SIGNING_SECRET=ใส่รหัสลับแบบสุ่ม
 ```
 
-Tanpa file ini, aplikasi tetap jalan memakai kunci pengembangan.
+ถ้าไม่มีไฟล์นี้ แอปยังทำงานได้ด้วยคีย์สำหรับพัฒนา
 
-## Arsitektur
+## สถาปัตยกรรม
 
-- **Next.js App Router** — halaman SSR + Route Handlers
-- **Katalog server** — menggabungkan channels, streams, logos, countries, categories (cache memori 45 menit)
-- **`/api/play/[id]`** — mengambil playlist saluran dari katalog
-- **`/api/media`** — proksi segmen/playlist HLS dengan HMAC, proteksi SSRF, dan rewrite URL
-- **hls.js** — pemutaran di peramban
+- **Next.js App Router** — หน้า SSR + Route Handlers
+- **แคตตาล็อกเซิร์ฟเวอร์** — รวมช่อง สตรีม โลโก้ ประเทศ หมวดหมู่ (แคชในหน่วยความจำ 45 นาที)
+- **`/api/play/[id]`** — ดึงเพลย์ลิสต์ของช่องจากแคตตาล็อก
+- **`/api/media`** — พร็อกซีเซ็กเมนต์/เพลย์ลิสต์ HLS ด้วย HMAC กัน SSRF และเขียน URL ใหม่
+- **hls.js** — เล่นในเบราว์เซอร์
 
-Sinyal siaran bersifat publik dan bisa putus, dibatasi wilayah, atau tidak kompatibel CORS. LokaTV tidak terafiliasi dengan stasiun mana pun.
+สัญญาณออกอากาศเป็นสาธารณะ อาจขาด ถูกจำกัดพื้นที่ หรือเข้ากันไม่ได้กับ CORS JOJO DEV TV ไม่สังกัดสถานีใด
 
-## Skrip
+## สคริปต์
 
-| Perintah | Fungsi |
+| คำสั่ง | หน้าที่ |
 | --- | --- |
-| `npm run dev` | Server pengembangan di port 43180 |
-| `npm run build` | Build produksi |
-| `npm start` | Jalankan hasil build |
+| `npm run dev` | เซิร์ฟเวอร์พัฒนาที่พอร์ต 43180 |
+| `npm run build` | สร้างเวอร์ชันโปรดักชัน |
+| `npm start` | รันผลบิลด์ |
 | `npm run lint` | ESLint |

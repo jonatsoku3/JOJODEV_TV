@@ -1,7 +1,7 @@
 import { createHmac, timingSafeEqual } from "crypto";
 
 function secret() {
-  return process.env.MEDIA_SIGNING_SECRET || "lokatv-local-dev-key";
+  return process.env.MEDIA_SIGNING_SECRET || "jojodevtv-local-dev-key";
 }
 
 export type MediaGrant = {
