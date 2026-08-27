@@ -30,7 +30,7 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-white/8 bg-[#0b0714]/70 backdrop-blur-2xl">
-      <div className="mx-auto flex h-[4.25rem] w-full max-w-7xl items-center gap-3 px-4 sm:px-6">
+      <div className="mx-auto flex h-[4.75rem] w-full max-w-7xl items-center gap-3 px-4 sm:px-6">
         <Link href="/" className="shrink-0">
           <BrandMark />
         </Link>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BrandMark } from "@/components/brand-logo";
 import { ChannelLogo } from "@/components/channel-logo";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
@@ -34,10 +35,10 @@ export function HeroShowcase({
             </span>
           </div>
           <div>
-            <p className="text-sm font-medium text-rose-200/90">{COPY.tagline}</p>
-            <h1 className="mt-2 max-w-xl font-heading text-4xl font-semibold tracking-tight sm:text-6xl">
-              <span className="text-gradient">{COPY.brand}</span>
-              <span className="mt-1 block text-3xl font-medium text-white/90 sm:text-4xl">
+            <BrandMark size="lg" />
+            <p className="mt-4 text-sm font-medium text-rose-200/90">{COPY.tagline}</p>
+            <h1 className="mt-2 max-w-xl font-heading text-3xl font-semibold tracking-tight sm:text-5xl">
+              <span className="mt-1 block text-white/90">
                 {channel.countryNameLocal} · {channel.name}
               </span>
             </h1>
